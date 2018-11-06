@@ -1,8 +1,8 @@
 # Visualizing Sentiment & Geoencoding with Tweets
 ###### CS 6630 Final Project
-*Neeka Ebrahimi | u0671080 | neeka.ebrahimi@gmail.com
-Richie Frost | u0997512 | richie.frost@utah.edu
-Dyllon Gagnier | u0708624 | dyllongagnier@gmail.com*
+*Neeka Ebrahimi | u0671080 | neeka.ebrahimi@gmail.com*
+*Richie Frost | u0997512 | richie.frost@utah.edu*
+*Dyllon Gagnier | u0708624 | dyllongagnier@gmail.com*
 
 Is there is an intuitive and informative way to visualize tweet sentiment, location, and time? That's what we aim to find out.
 
