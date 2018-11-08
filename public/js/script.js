@@ -1,4 +1,4 @@
-import { test } from './map.js';
+import { Map } from './map.js';
 
 async function main() {
     // Load these asynchronously.
@@ -7,7 +7,8 @@ async function main() {
     const [data, map] = await Promise.all([dataProm, mapProm]);
     console.log(data);
     console.log(map);
-    test();
+
+    new Map('#us-map', map);
 }
 
 main();
