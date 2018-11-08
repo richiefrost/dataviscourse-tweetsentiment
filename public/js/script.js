@@ -1,8 +1,13 @@
-/**
- * Loads in tweet information from tweets-with-sentiment.json
- */
-d3.json('data/tweets-with-sentiment.json').then( data => {
+import { test } from './map.js';
 
+async function main() {
+    // Load these asynchronously.
+    const dataProm = d3.json('data/tweets-with-sentiment.json');
+    const mapProm = d3.json('https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_110m_admin_1_states_provinces_shp.geojson');
+    const [data, map] = await Promise.all([dataProm, mapProm]);
     console.log(data);
+    console.log(map);
+    test();
+}
 
-});
+main();
