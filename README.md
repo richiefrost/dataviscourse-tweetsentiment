@@ -12,8 +12,8 @@ Is there is an intuitive and informative way to visualize tweet sentiment, locat
 ```sh
 $ cd path/to/dataviscourse-tweetsentiment
 # python 2
-$ python -m SimpleHTTPServer
+$ python -m SimpleHTTPServer 8080
 # python 3
-$ python -m http.server
+$ python -m http.server 8080
 ```
 Then go to [http://localhost:8080](http://localhost:8080).
