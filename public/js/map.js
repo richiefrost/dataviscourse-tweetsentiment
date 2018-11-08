@@ -10,7 +10,8 @@ export class Map {
         const svg = d3
             .select(selectorQuery)
             .append('svg')
-            .attr('viewBox', `0 0 ${width} ${height}`);
+            .attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('class', 'data-map');
 
         const projection = d3.geoAlbersUsa()
             .translate([width / 2, height / 2])
