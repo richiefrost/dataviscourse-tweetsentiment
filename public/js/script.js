@@ -1,4 +1,4 @@
-import { Map } from './map.js';
+import { TweetMap } from './map.js';
 
 async function main() {
     // Load these asynchronously.
@@ -9,7 +9,8 @@ async function main() {
     console.log(data);
     console.log(map);
 
-    new Map('#us-map', map);
+    const tweetMap = new TweetMap('#us-map', map);
+    tweetMap.renderTweets(data)
 }
 
 main();

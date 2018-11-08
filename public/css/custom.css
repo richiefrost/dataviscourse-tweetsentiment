@@ -2,3 +2,7 @@
     fill: none;
     stroke: #555555;
 }
+
+.data-map rect {
+    fill: green;
+}
