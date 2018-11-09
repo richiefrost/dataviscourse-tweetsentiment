@@ -6,3 +6,19 @@
 .data-map rect {
     fill: green;
 }
+
+.positive {
+	fill: #2166ac;
+}
+
+.negative {
+	fill: #b2182b;
+}
+
+.white {
+	fill: white;
+}
+
+.info {
+	margin-bottom: 20px;
+}
