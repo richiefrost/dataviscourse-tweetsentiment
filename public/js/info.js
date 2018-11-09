@@ -19,11 +19,11 @@ export class Info {
 
     displayInfo() {
         let positiveTweets = _.filter(this.tweets, function(tweet){
-            return tweet.sentiment >= 0.5;
+            return tweet.sentiment_score >= 0.5;
         });
 
         let negativeTweets = _.filter(this.tweets, function(tweet){
-            return tweet.sentiment < 0.5;
+            return tweet.sentiment_score < 0.5;
         });
 
         let percentPositive = (positiveTweets.length / this.tweets.length) * 100;
@@ -84,7 +84,7 @@ export class Info {
             .classed('negative', true)
             .attr('x', 0)
             .attr('y', 95)
-            .text(d => Math.round(d.negative) + "% Positive Tweets");
+            .text(d => Math.round(d.negative) + "% Negative Tweets");
 
         negativeGroup.append('text')
             .classed('white', true)
