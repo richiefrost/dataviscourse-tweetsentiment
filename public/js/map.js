@@ -1,16 +1,56 @@
-import { minBy, uniformRandom } from './util.js'
+import { minBy, sum, uniformRandom } from './util.js'
 
 const CLUSTER_COUNT = 50;
+
+const square = x => x * x;
+const distance = (p1, p2) => Math.sqrt(square(p1[0] - p2[0]) + square(p1[1] - p2[1]));
+
+const findCenterGen = centers => point => {
+    return minBy(centers, center => distance(center, point));
+};
+
+const kmeans = (points, centers) => {
+    let trueCenters = centers;
+
+    const centersEqual = newCenters => {
+        for (let i = 0; i < trueCenters.length; i++) {
+            const c1 = trueCenters[i];
+            const c2 = newCenters[i];
+
+            if (c1[0] !== c2[0] || c1[1] !== c2[1]) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    while (true) {
+        const clusterMap = new Map(trueCenters.map(center => [center, []]));
+        const clusterFunc = findCenterGen(trueCenters);
+
+        for (const point of points) {
+            clusterMap.get(clusterFunc(point)).push(point);
+        }
+
+        const newCenters = Array.from(clusterMap.values()).map(clusterPoints => {
+            const computeEle = pos => sum(clusterPoints.map(pt => pt[pos])) / clusterPoints.length;
+            return [computeEle(0), computeEle(1)];
+        });
+
+        if (centersEqual(newCenters)) {
+            return clusterFunc;
+        } else {
+            trueCenters = newCenters;
+        }
+    }
+};
 
 // Lets do a Gonzalez cluster for simplicity.
 const pointCluster = (points, clusterCount) => {
     const centers = [points[0]];
-    const square = x => x * x;
-    const distance = (p1, p2) => Math.sqrt(square(p1[0] - p2[0]) + square(p1[1] - p2[1]));
 
-    const findCenter = point => {
-        return minBy(centers, center => distance(center, point));
-    };
+    let findCenter = findCenterGen(centers);
 
     while (centers.length < clusterCount && centers.length < points.length) {
         const newCenter = minBy(points, point => {
@@ -18,11 +58,15 @@ const pointCluster = (points, clusterCount) => {
             return distance(pcenter, point);
         }, true);
         centers.push(newCenter);
+        findCenter = findCenterGen(centers);
     }
+    // const centers = new Set();
+    // while (centers.size < clusterCount) {
+    //     const index = Math.floor(uniformRandom(0, points.length));
+    //     centers.add(points[index]);
+    // }
 
-    console.log(centers);
-
-    return findCenter;
+    return kmeans(points, Array.from(centers));
 };
 
 export class TweetMap {

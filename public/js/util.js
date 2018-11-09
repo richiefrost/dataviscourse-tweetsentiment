@@ -18,5 +18,9 @@ export function minBy(eles, key=identity, invert=false) {
 }
 
 export function uniformRandom(begin, end) {
-    return (end - begin) * Math.random() + begin
+    return (end - begin) * Math.random() + begin;
+}
+
+export function sum(arr) {
+    return arr.reduce((x1, x2) => x1 + x2, 0);
 }
