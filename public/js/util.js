@@ -17,6 +17,27 @@ export function minBy(eles, key=identity, invert=false) {
     return maxVal;
 }
 
+export function getAverageSentimentByState(jsonData) {
+    const totals = {};
+    const counts = {};
+    for (let element of jsonData) {
+        let state = element.state.code;
+        if (!totals.hasOwnProperty(state)) {
+            totals[state] = 0;
+            counts[state] = 0;
+        }
+        totals[state] += element.sentiment_score;
+        counts[state] += 1;
+    }
+
+    const averages = {};
+    for (let state of Object.keys(totals)) {
+        averages[state] = totals[state] / counts[state];
+    }
+
+    return averages;
+}
+
 export function uniformRandom(begin, end) {
     return (end - begin) * Math.random() + begin;
 }
