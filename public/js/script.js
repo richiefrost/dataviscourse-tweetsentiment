@@ -23,13 +23,13 @@ async function main() {
             case 'Total happy':
                 totals = getTotalByState(data.filter(tweet => tweet.sentiment_score >= 0.5));
                 // Normalize by taking the rank of each state
-                ranks = getStateRanks(totals, 'desc');
+                ranks = getStateRanks(totals, 'asc');
                 tweetMap.renderMapFill(ranks, d3.interpolateGreens);
                 break;
             case 'Total angry':
                 totals = getTotalByState(data.filter(tweet => tweet.sentiment_score < 0.5));
                 // Normalize by taking the rank of each state
-                ranks = getStateRanks(totals, 'desc');
+                ranks = getStateRanks(totals, 'asc');
                 tweetMap.renderMapFill(ranks, d3.interpolateReds);
                 break;
             /*
