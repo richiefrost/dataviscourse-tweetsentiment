@@ -93,7 +93,8 @@ export class TweetMap {
             .data(mapJSON.features)
             .enter()
             .append('path')
-            .attr('d', path);
+            .attr('d', path)
+            .attr('id', d => d.properties.postal); // This assigns the state abbreviation to the state path
 
         this.svg = svg;
         this.projection = projection;
