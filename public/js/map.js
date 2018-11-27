@@ -104,6 +104,15 @@ export class TweetMap {
         };
     }
 
+    renderTotals(totals) {
+        const totalsAsArray = Object.keys(totals).map(state => [state, totals[state]]);
+        const scale = d3.scaleSequential(d3.interpolateBlues)
+            .domain(d3.extent(totalsAsArray, d => d[1])); // Domain based on state total
+
+        this.svg.selectAll('path')
+            .attr('fill', d => scale(totals[d.properties.postal]));
+    }
+
     renderTweets(tweets) {
         const rawPoints = tweets.map(tweet =>{
             return tweet.geolocation.coordinates;

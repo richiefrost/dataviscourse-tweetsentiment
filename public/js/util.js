@@ -38,6 +38,20 @@ export function getAverageSentimentByState(jsonData) {
     return averages;
 }
 
+// Returns an object, {state: total}
+export function getTotalByState(jsonData) {
+    const totals = {};
+    for (let element of jsonData) {
+        let state = element.state.code;
+        if (!totals.hasOwnProperty(state)) {
+            totals[state] = 0;
+        }
+        totals[state] += 1;
+    }
+
+    return totals;
+}
+
 export function uniformRandom(begin, end) {
     return (end - begin) * Math.random() + begin;
 }

@@ -1,6 +1,6 @@
 import { TweetMap } from './map.js';
 import { Info } from './info.js';
-import { getAverageSentimentByState } from './util.js';
+import { getTotalByState } from './util.js';
 
 async function main() {
     // Load these asynchronously.
@@ -11,11 +11,12 @@ async function main() {
     console.log(data);
     console.log(map);
 
-    const averages = getAverageSentimentByState(data);
-    console.log(averages);
+    const totals = getTotalByState(data);
+    console.log(totals);
 
     const tweetMap = new TweetMap('#us-map', map);
-    tweetMap.renderTweets(data);
+    //tweetMap.renderTweets(data);
+    tweetMap.renderTotals(totals);
 
     const info = new Info(data);
     info.displayInfo();
