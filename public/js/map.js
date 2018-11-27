@@ -105,12 +105,34 @@ export class TweetMap {
     }
 
     renderTotals(totals) {
-        const totalsAsArray = Object.keys(totals).map(state => [state, totals[state]]);
         const scale = d3.scaleSequential(d3.interpolateBlues)
-            .domain(d3.extent(totalsAsArray, d => d[1])); // Domain based on state total
+            .domain(d3.extent(Object.keys(totals), state => totals[state])); // Domain based on state total
 
         this.svg.selectAll('path')
             .attr('fill', d => scale(totals[d.properties.postal]));
+    }
+
+    renderAverageSentiment(averages) {
+        const scale = d3.scaleSequential(d3.interpolateRdYlGn)
+            .domain(d3.extent(Object.keys(averages), state => averages[state]));
+
+        this.svg.selectAll('path')
+            .attr('fill', d => scale(averages[d.properties.postal]))
+            .on('mouseover', d => {
+                console.log(d.properties.postal);
+                console.log(averages[d.properties.postal]);
+            });
+    }
+
+    renderMapFill(stateData, colorInterpolation = d3.interpolateGreens) {
+        const scale = d3.scaleSequential(colorInterpolation)
+            .domain(d3.extent(Object.keys(stateData), state => stateData[state]));
+        this.svg.selectAll('path')
+            .attr('fill', d => scale(stateData[d.properties.postal]))
+            .on('mouseover', d => {
+                console.log(`State: ${d.properties.postal}`);
+                console.log(`Value: ${stateData[d.properties.postal]}`);
+            });
     }
 
     renderTweets(tweets) {

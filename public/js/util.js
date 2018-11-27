@@ -52,6 +52,21 @@ export function getTotalByState(jsonData) {
     return totals;
 }
 
+export function getStateRanks(stateData, sortDir = 'asc') {
+    const ranksArray = Object.keys(stateData).map(state => [state, stateData[state]]);
+    if (sortDir === 'asc') {
+        ranksArray.sort((a, b) => a[1] - b[1]);
+    }
+    else {
+        ranksArray.sort((a, b) => b[1] - a[1]);
+    }
+    const ranks = {};
+    for (let [index, rank] of ranksArray.entries()) {
+        ranks[rank[0]] = index + 1;
+    }
+    return ranks;
+}
+
 export function uniformRandom(begin, end) {
     return (end - begin) * Math.random() + begin;
 }
