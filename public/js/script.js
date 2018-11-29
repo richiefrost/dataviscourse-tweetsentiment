@@ -20,13 +20,13 @@ async function main() {
                 totals = getTotalByState(data);
                 tweetMap.renderTotals(totals);
                 break;
-            case 'Total happy':
+            case 'Happiest ranked states':
                 totals = getTotalByState(data.filter(tweet => tweet.sentiment_score >= 0.5));
                 // Normalize by taking the rank of each state
                 ranks = getStateRanks(totals, 'asc');
                 tweetMap.renderMapFill(ranks, d3.interpolateGreens);
                 break;
-            case 'Total angry':
+            case 'Angriest ranked states':
                 totals = getTotalByState(data.filter(tweet => tweet.sentiment_score < 0.5));
                 // Normalize by taking the rank of each state
                 ranks = getStateRanks(totals, 'asc');
@@ -51,7 +51,7 @@ async function main() {
     const topTweets = getTopTweetsByState(data);
 
     // Set up the view switcher
-    const viewTypes = ['Average sentiment', 'Total tweets', 'Total happy', 'Total angry'];
+    const viewTypes = ['Average sentiment', 'Total tweets', 'Happiest ranked states', 'Angriest ranked states'];
     const viewSelect = d3.select('#viewSelect')
         .append('select')
         .classed('form-control', true)

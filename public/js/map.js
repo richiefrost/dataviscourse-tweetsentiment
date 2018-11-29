@@ -119,6 +119,8 @@ export class TweetMap {
     renderTotals(totals) {
         const that = this;
 
+        d3.select('#map-label').html('Total Tweets per State');
+
         const scale = d3.scaleSequential(d3.interpolateBlues)
             .domain(d3.extent(Object.keys(totals), state => totals[state])); // Domain based on state total
 
@@ -164,6 +166,8 @@ export class TweetMap {
 
     renderAverageSentiment(averages) {
         const that = this;
+
+        d3.select('#map-label').html('Average Sentiment per State');
 
         const scale = d3.scaleSequential(d3.interpolateRdYlGn)
             .domain(d3.extent(Object.keys(averages), state => averages[state]));
@@ -216,6 +220,15 @@ export class TweetMap {
     renderMapFill(stateData, colorInterpolation = d3.interpolateGreens) {
         const that = this;
 
+        let labels = [];
+        if(colorInterpolation == d3.interpolateGreens){
+            d3.select('#map-label').html('Happiest Ranked States');
+            labels = ['Least Happy', '', '', '', '', '', '', '', 'Most Happy'];
+        } else {
+            d3.select('#map-label').html('Angriest Ranked States');
+            labels = ['Least Angry', '', '', '', '', '', '', '', 'Most Angry'];
+        }
+
         const scale = d3.scaleSequential(colorInterpolation)
             .domain(d3.extent(Object.keys(stateData), state => stateData[state]));
 
@@ -231,7 +244,7 @@ export class TweetMap {
             .scale(scale)
             .labelAlign('middle')
             .labelOffset(3)
-            .labels(['1', '', '', '', '25', '', '', '', '51']);
+            .labels(labels);
 
         this.svg.select('.legend')
             .call(legend);
