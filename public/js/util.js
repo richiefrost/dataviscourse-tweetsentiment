@@ -32,7 +32,8 @@ export function getAverageSentimentByState(jsonData) {
 
     const averages = {};
     for (let state of Object.keys(totals)) {
-        averages[state] = totals[state] / counts[state];
+        // hacky way to make sentiment scale from -1 to 1
+        averages[state] = ((totals[state] / counts[state]) - 0.5491584409915266) * 10;
     }
 
     return averages;

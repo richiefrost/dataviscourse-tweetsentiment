@@ -26,6 +26,9 @@
 
     <!-- underscore.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+
+    <!-- d3-legend -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
 </head>
 
 <body>
@@ -48,7 +51,7 @@
 <br>
 
 <div class="container-fluid">
-    <h1 class="text-center">Visualizing Sentiment & Geoencoding with Tweets</h1>
+    <h1 class="text-center">How happy is America?</h1>
     <h5 class="text-center text-muted">Richie Frost, Dyllon Gagnier, Neeka Ebrahimi</h5>
 </div>
 <br>
@@ -57,14 +60,14 @@
         <div class="col-sm-9">
             <h5>Tweets per State</h5>
             <div id="us-map"></div>
+            <div id="legend"></div>
         </div>
         <div class="col-sm-3">
             <h5>Tweet Breakdown</h5>
             <div id="info"></div>
             <h5>Select view</h5>
-            <div id="viewSelect">
-                
-            </div>
+            <div id="viewSelect"></div>
+            <div id="state-info"></div>
             <!--
                 <h5>Trendline - Coming soon!</h5>
                 <div id="trendline">

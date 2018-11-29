@@ -1,6 +1,7 @@
 .data-map {
     fill: none;
     stroke: #555555;
+    stroke-width: 0.5px;
 }
 
 .data-map rect {
@@ -8,11 +9,11 @@
 }
 
 .positive {
-	fill: #2166ac;
+	fill: #036C39;
 }
 
 .negative {
-	fill: #b2182b;
+	fill: #A70326;
 }
 
 .white {
@@ -25,4 +26,35 @@
 
 #topicSelect {
 	padding-bottom: 25px;
+}
+
+.state:hover{
+	fill-opacity:0.7;
+}
+
+/*tooltip */
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    min-width: 200px;
+    height: 60px;
+    padding: 2px;
+    background: white;
+    stroke: gray;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.tooltip h4 {
+	margin-bottom: 4px;
+	margin-top: 5px;
+}
+
+.label {
+	font-size: 8px;
+}
+
+.badge-pill {
+	padding: 0.5em 1em;
 }

@@ -12,11 +12,11 @@ async function main() {
     function changeMapView(viewType) {
         let totals, averages, ranks;
         switch(viewType) {
-            case 'Average':
+            case 'Average sentiment':
                 averages = getAverageSentimentByState(data);
                 tweetMap.renderAverageSentiment(averages);
                 break;
-            case 'Total':
+            case 'Total tweets':
                 totals = getTotalByState(data);
                 tweetMap.renderTotals(totals);
                 break;
@@ -49,8 +49,11 @@ async function main() {
     }
 
     // Set up the view switcher
-    const viewTypes = ['Average', 'Total', 'Total happy', 'Total angry', 'Total bars'];
-    const viewSelect = d3.select('#viewSelect').append('select');
+    const viewTypes = ['Average sentiment', 'Total tweets', 'Total happy', 'Total angry'];
+    const viewSelect = d3.select('#viewSelect')
+        .append('select')
+        .classed('form-control', true)
+        .style('width', '70%');
     const viewOptions = viewSelect.selectAll('option').data(viewTypes);
     viewOptions.exit().remove();
     viewOptions.enter().append('option')
@@ -60,9 +63,14 @@ async function main() {
         let viewType = viewTypes[this.selectedIndex];
         changeMapView(viewType);
     });
+
+    let avgSentiments = getAverageSentimentByState(data)
+    let totalTweets = getTotalByState(data);
+    let totalHappy = getTotalByState(data.filter(tweet => tweet.sentiment_score >= 0.5));
+    let totalAngry = getTotalByState(data.filter(tweet => tweet.sentiment_score < 0.5));
     
-    const tweetMap = new TweetMap('#us-map', map);
-    tweetMap.renderAverageSentiment(getAverageSentimentByState(data));
+    const tweetMap = new TweetMap('#us-map', map, avgSentiments, totalTweets, totalHappy, totalAngry);
+    tweetMap.renderAverageSentiment(avgSentiments);
 
     const info = new Info(data, changeMapView);
     info.displayInfo();

@@ -70,13 +70,13 @@ const pointCluster = (points, clusterCount) => {
 };
 
 export class TweetMap {
-    constructor(selectorQuery, mapJSON) {
+    constructor(selectorQuery, mapJSON, avgSentiments, totalTweets, totalHappy, totalAngry) {
         // Based off of http://dataviscourse.net/tutorials/lectures/lecture-maps/
         // const center = {
         //     lon: -83.903347,
         //     lat: 38.769315
         // };
-        const width = 1000;
+        const width = 800;
         const height = 500;
         const svg = d3
             .select(selectorQuery)
@@ -93,8 +93,14 @@ export class TweetMap {
             .data(mapJSON.features)
             .enter()
             .append('path')
+            .classed('state', true)
             .attr('d', path)
             .attr('id', d => d.properties.postal); // This assigns the state abbreviation to the state path
+
+        d3.select('#us-map')
+            .append('div')
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
         this.svg = svg;
         this.projection = projection;
@@ -102,36 +108,153 @@ export class TweetMap {
             width,
             height
         };
+
+        this.avgSentiments = avgSentiments;
+        this.totalTweets = totalTweets;
+        this.totalHappy = totalHappy;
+        this.totalAngry = totalAngry;
     }
 
     renderTotals(totals) {
+        const that = this;
+
         const scale = d3.scaleSequential(d3.interpolateBlues)
             .domain(d3.extent(Object.keys(totals), state => totals[state])); // Domain based on state total
 
+        this.svg.append('g')
+            .attr('class', 'legend')
+            .attr("transform", "translate(10,0)");
+
+        let legend = d3.legendColor()
+            .shapeWidth((this.bounds.width-40)/9)
+            .shapeHeight(13)
+            .cells(9)
+            .orient('horizontal')
+            .scale(scale)
+            .labelAlign('middle')
+            .labelOffset(3)
+            .labels(['8', '', '', '', '500', '', '', '', '1000+']);
+
+        this.svg.select('.legend')
+            .call(legend);
+
         this.svg.selectAll('path')
-            .attr('fill', d => scale(totals[d.properties.postal]));
+            .attr('fill', d => scale(totals[d.properties.postal]))
+            .on('mouseover', d => {
+                d3.event.stopPropagation();
+                d3.select(".tooltip")
+                    .style("display", "inline")
+                    .style("opacity", 0.9);
+            })
+            .on('mousemove', d => {
+                d3.event.stopPropagation();
+                d3.select('.tooltip')
+                    .html(that.tooltipRender(d.properties.name, totals[d.properties.postal], 'Total tweets'))
+                    .style("left", (d3.event.pageX) + "px")
+                    .style('top', (d3.event.pageY - 200) + "px");
+            })
+            .on('mouseout', d => {
+                d3.event.stopPropagation();
+                d3.select('.tooltip')
+                    .style("display", 'none')
+                    .style('opacity', 0);
+            });
     }
 
     renderAverageSentiment(averages) {
+        const that = this;
+
         const scale = d3.scaleSequential(d3.interpolateRdYlGn)
             .domain(d3.extent(Object.keys(averages), state => averages[state]));
+
+        this.svg.append('g')
+            .attr('class', 'legend')
+            .attr("transform", "translate(10,0)");
+
+        let legend = d3.legendColor()
+            .shapeWidth((this.bounds.width-40)/9)
+            .shapeHeight(13)
+            .cells(9)
+            .orient('horizontal')
+            .scale(scale)
+            .labelAlign('middle')
+            .labelOffset(3)
+            .labels(['Negative (-1)', '', '', '', 'Neutral (0)', '', '', '', 'Positive (+1)']);
+
+        this.svg.select('.legend')
+            .call(legend);
 
         this.svg.selectAll('path')
             .attr('fill', d => scale(averages[d.properties.postal]))
             .on('mouseover', d => {
-                console.log(d.properties.postal);
-                console.log(averages[d.properties.postal]);
+                d3.event.stopPropagation();
+                d3.select(".tooltip")
+                    .style("display", "inline")
+                    .style("opacity", 0.9);
+            })
+            .on('mousemove', d => {
+                d3.event.stopPropagation();
+                d3.select('.tooltip')
+                    .html(that.tooltipRender(d.properties.name, averages[d.properties.postal].toFixed(4), 'Average Sentiment'))
+                    .style("left", (d3.event.pageX) + "px")
+                    .style('top', (d3.event.pageY - 200) + "px");
+            })
+            .on('mouseout', d => {
+                d3.event.stopPropagation();
+                d3.select('.tooltip')
+                    .style("display", 'none')
+                    .style('opacity', 0);
+            })
+            .on('click', d => {
+                d3.event.stopPropagation();
+                d3.select("#state-info")
+                    .html(that.stateInfoRender(d));
             });
     }
 
     renderMapFill(stateData, colorInterpolation = d3.interpolateGreens) {
+        const that = this;
+
         const scale = d3.scaleSequential(colorInterpolation)
             .domain(d3.extent(Object.keys(stateData), state => stateData[state]));
+
+        this.svg.append('g')
+            .attr('class', 'legend')
+            .attr("transform", "translate(10,0)");
+
+        let legend = d3.legendColor()
+            .shapeWidth((this.bounds.width-40)/9)
+            .shapeHeight(13)
+            .cells(9)
+            .orient('horizontal')
+            .scale(scale)
+            .labelAlign('middle')
+            .labelOffset(3)
+            .labels(['1', '', '', '', '25', '', '', '', '51']);
+
+        this.svg.select('.legend')
+            .call(legend);
+
         this.svg.selectAll('path')
             .attr('fill', d => scale(stateData[d.properties.postal]))
             .on('mouseover', d => {
-                console.log(`State: ${d.properties.postal}`);
-                console.log(`Value: ${stateData[d.properties.postal]}`);
+                d3.event.stopPropagation();
+                d3.select(".tooltip")
+                    .style("display", "inline")
+                    .style("opacity", 0.9);
+            })
+            .on('mousemove', d => {
+                d3.event.stopPropagation();
+                d3.select('.tooltip')
+                    .html(that.tooltipRender(d.properties.name, stateData[d.properties.postal], 'Ranking'))
+                    .style("left", (d3.event.pageX) + "px")
+                    .style('top', (d3.event.pageY - 200) + "px");
+            })
+            .on('mouseout', d => {
+                d3.event.stopPropagation();
+                d3.select('.tooltip')
+                    .style("display", 'none')
+                    .style('opacity', 0);
             });
     }
 
@@ -170,5 +293,29 @@ export class TweetMap {
                 const height = basicScale(clusterMap.get(point));
                 return `translate(-${rectWidth / 2}, -${height / 2})`;
             });
+    }
+
+    tooltipRender(state, total, title) {
+        return "<div><h4>"+state+"</h4>"+
+            "<p>"+title+": "+total+"</p></div>";
+    }
+
+    stateInfoRender(d) {
+        let html = "<div class='card border-secondary mb-3' style='margin-top: 30px; width: 70%'>";
+
+        html += "<div class='card-header'>State Info</div>";
+        html += "<div class='card-body'>";
+        html += "<h4 class='card-title text-primary'>"+d.properties.name+"</h4>";
+
+        html += "<ul class='list-group'>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Total Tweets <span class='badge badge-info badge-pill'>"+this.totalTweets[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Positive Tweets <span class='badge badge-success badge-pill'>"+this.totalHappy[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Negative Tweets <span class='badge badge-danger badge-pill'>"+this.totalAngry[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Avg. Sentiment <span class='badge badge-light badge-pill'>"+this.avgSentiments[d.properties.postal].toFixed(4)+"</span></li>";
+        html += "</ul>";
+
+        html += "</div></div>";
+        
+        return html;
     }
 }
