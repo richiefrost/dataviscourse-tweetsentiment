@@ -222,10 +222,10 @@ export class TweetMap {
 
         let labels = [];
         if(colorInterpolation == d3.interpolateGreens){
-            d3.select('#map-label').html('Happiest Ranked States');
+            d3.select('#map-label').html('Happiest Ranked States <small class="text-muted">based on number of happy tweets</small>');
             labels = ['Least Happy', '', '', '', '', '', '', '', 'Most Happy'];
         } else {
-            d3.select('#map-label').html('Angriest Ranked States');
+            d3.select('#map-label').html('Angriest Ranked States <small class="text-muted">based on number of angry tweets</small>');
             labels = ['Least Angry', '', '', '', '', '', '', '', 'Most Angry'];
         }
 
