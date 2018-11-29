@@ -53,6 +53,47 @@ export function getTotalByState(jsonData) {
     return totals;
 }
 
+// returns object {state: { positive: {sentiment, tweet}, negative: {sentiment, tweet} } }
+export function getTopTweetsByState(jsonData){
+   const topTweets = {};
+
+   for (let element of jsonData) {
+        let state = element.state.code;
+
+        if(!topTweets.hasOwnProperty(state)){
+            let positiveSentiment = element.sentiment_score >= 0.5 ? element.sentiment_score : null;
+            let positiveTweet = element.sentiment_score >= 0.5 ? element.text : null;
+
+            let negativeSentiment = element.sentiment_score < 0.5 ? element.sentiment_score : null;
+            let negativeTweet = element.sentiment_score < 0.5 ? element.text : null;
+
+            topTweets[state] = {
+                'positive': {
+                    'sentiment': positiveSentiment,
+                    'tweet': positiveTweet,
+                },
+                'negative': {
+                    'sentiment': negativeSentiment,
+                    'tweet': negativeTweet,
+                }
+            }
+        } else {
+            if(element.sentiment_score >= 0.5) {
+                if(topTweets[state].positive.sentiment == null || element.sentiment_score > topTweets[state].positive.sentiment) {
+                    topTweets[state].positive.sentiment = element.sentiment_score;
+                    topTweets[state].positive.tweet = element.text;
+                }
+            } else {
+                 if(topTweets[state].negative.sentiment == null || element.sentiment_score < topTweets[state].negative.sentiment) {
+                    topTweets[state].negative.sentiment = element.sentiment_score;
+                    topTweets[state].negative.tweet = element.text;
+                }
+            }
+        }
+    } 
+    return topTweets;
+}
+
 export function getStateRanks(stateData, sortDir = 'asc') {
     const ranksArray = Object.keys(stateData).map(state => [state, stateData[state]]);
     if (sortDir === 'asc') {

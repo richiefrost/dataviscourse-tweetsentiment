@@ -70,7 +70,7 @@ const pointCluster = (points, clusterCount) => {
 };
 
 export class TweetMap {
-    constructor(selectorQuery, mapJSON, avgSentiments, totalTweets, totalHappy, totalAngry) {
+    constructor(selectorQuery, mapJSON, avgSentiments, totalTweets, totalHappy, totalAngry, topTweets) {
         // Based off of http://dataviscourse.net/tutorials/lectures/lecture-maps/
         // const center = {
         //     lon: -83.903347,
@@ -113,6 +113,7 @@ export class TweetMap {
         this.totalTweets = totalTweets;
         this.totalHappy = totalHappy;
         this.totalAngry = totalAngry;
+        this.topTweets = topTweets;
     }
 
     renderTotals(totals) {
@@ -301,7 +302,7 @@ export class TweetMap {
     }
 
     stateInfoRender(d) {
-        let html = "<div class='card border-secondary mb-3' style='margin-top: 30px; width: 70%'>";
+        let html = "<div class='card border-secondary mb-3' style='margin-top: 30px; width: 95%'>";
 
         html += "<div class='card-header'>State Info</div>";
         html += "<div class='card-body'>";
@@ -313,6 +314,16 @@ export class TweetMap {
         html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Negative Tweets <span class='badge badge-danger badge-pill'>"+this.totalAngry[d.properties.postal]+"</span></li>";
         html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Avg. Sentiment <span class='badge badge-light badge-pill'>"+this.avgSentiments[d.properties.postal].toFixed(4)+"</span></li>";
         html += "</ul>";
+
+        html += '<div class="list-group">'
+        html += '<a class="list-group-item list-group-item-action active" style="margin-top: 10px">Most Positive Tweet</a>';
+        html += '<a class="list-group-item list-group-item-action">'+this.topTweets[d.properties.postal].positive.tweet+'</a>';
+        html += '</div>';
+
+        html += '<div class="list-group">'
+        html += '<a class="list-group-item list-group-item-action active" style="margin-top: 10px">Most Negative Tweet</a>';
+        html += '<a class="list-group-item list-group-item-action">'+this.topTweets[d.properties.postal].negative.tweet+'</a>';
+        html += '</div>';
 
         html += "</div></div>";
         

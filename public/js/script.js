@@ -1,6 +1,6 @@
 import { TweetMap } from './map.js';
 import { Info } from './info.js';
-import { getTotalByState, getAverageSentimentByState, getStateRanks } from './util.js';
+import { getTotalByState, getAverageSentimentByState, getStateRanks, getTopTweetsByState } from './util.js';
 
 async function main() {
     // Load these asynchronously.
@@ -48,6 +48,8 @@ async function main() {
         }
     }
 
+    const topTweets = getTopTweetsByState(data);
+
     // Set up the view switcher
     const viewTypes = ['Average sentiment', 'Total tweets', 'Total happy', 'Total angry'];
     const viewSelect = d3.select('#viewSelect')
@@ -64,12 +66,12 @@ async function main() {
         changeMapView(viewType);
     });
 
-    let avgSentiments = getAverageSentimentByState(data)
+    let avgSentiments = getAverageSentimentByState(data);
     let totalTweets = getTotalByState(data);
     let totalHappy = getTotalByState(data.filter(tweet => tweet.sentiment_score >= 0.5));
     let totalAngry = getTotalByState(data.filter(tweet => tweet.sentiment_score < 0.5));
     
-    const tweetMap = new TweetMap('#us-map', map, avgSentiments, totalTweets, totalHappy, totalAngry);
+    const tweetMap = new TweetMap('#us-map', map, avgSentiments, totalTweets, totalHappy, totalAngry, topTweets);
     tweetMap.renderAverageSentiment(avgSentiments);
 
     const info = new Info(data, changeMapView);
