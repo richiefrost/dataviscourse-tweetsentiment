@@ -169,8 +169,12 @@ export class TweetMap {
 
         d3.select('#map-label').html('Average Sentiment per State');
 
-        const scale = d3.scaleSequential(d3.interpolateRdYlGn)
-            .domain(d3.extent(Object.keys(averages), state => averages[state]));
+        const sentimentDomain = d3.extent(Object.keys(averages), state => averages[state]);
+        sentimentDomain.reverse(); // Reverse this so our color scale goes from blue to red.
+
+
+        const scale = d3.scaleSequential(d3.interpolateRdBu)
+            .domain(sentimentDomain);
 
         this.svg.append('g')
             .attr('class', 'legend')
@@ -184,7 +188,7 @@ export class TweetMap {
             .scale(scale)
             .labelAlign('middle')
             .labelOffset(3)
-            .labels(['Negative (-1)', '', '', '', 'Neutral (0)', '', '', '', 'Positive (+1)']);
+            .labels(['Positive (+1)', '', '', '', 'Neutral (0)', '', '', '', 'Negative (-1)']);
 
         this.svg.select('.legend')
             .call(legend);
