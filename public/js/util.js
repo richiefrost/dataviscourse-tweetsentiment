@@ -94,6 +94,35 @@ export function getTopTweetsByState(jsonData){
     return topTweets;
 }
 
+export function getTweetsByTime(jsonData){
+    const dates = {};
+    const counts = {};
+
+    for (let element of jsonData) {
+        let dateArray = element.date.split("-");
+        let date = dateArray[0] + "-" + dateArray[1];
+        
+        if(!dates.hasOwnProperty(date)){
+            dates[date] = element.sentiment_score;
+            counts[date] = 1;
+        } else {
+            dates[date] += element.sentiment_score;
+            counts[date] += 1;
+        }
+    }
+
+    const averages = [];
+    for (let date of Object.keys(dates)) {
+        // hacky way to make sentiment scale from -1 to 1
+        averages.push({
+            'date': date,
+            'sentiment': ((dates[date] / counts[date]) - 0.5491584409915266) * 10,
+        });
+    }
+    console.log(JSON.stringify(averages));
+    return averages;
+}
+
 export function getStateRanks(stateData, sortDir = 'asc') {
     const ranksArray = Object.keys(stateData).map(state => [state, stateData[state]]);
     if (sortDir === 'asc') {

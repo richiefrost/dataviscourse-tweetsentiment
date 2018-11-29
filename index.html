@@ -29,6 +29,12 @@
 
     <!-- d3-legend -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <!-- chartjs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
 </head>
 
 <body>
@@ -61,19 +67,19 @@
             <h5>Tweets per State</h5>
             <div id="us-map"></div>
             <div id="legend"></div>
+            <br>
+            <h5>Monthly Average Sentiment</h5>
+            <div id="trendline">
+                <canvas id="canvas" height="75"></canvas>
+            </div>
         </div>
         <div class="col-sm-3">
             <h5>Tweet Breakdown</h5>
             <div id="info"></div>
+            
             <h5>Select view</h5>
             <div id="viewSelect"></div>
             <div id="state-info"></div>
-            <!--
-                <h5>Trendline - Coming soon!</h5>
-                <div id="trendline">
-                    
-                </div>
-            -->
         </div>
     </div>
 </div>
@@ -103,6 +109,68 @@
 
 <script type="module" src="public/js/script.js"></script>
 <script type="module">import './public/js/script.js'</script>
+
+<script type="text/javascript">
+    $.getJSON('data/date-sentiment.json', function(data){
+        data = data.sort(function(a, b){
+            return new Date(a.date).getTime() - new Date(b.date).getTime();
+        });
+        
+        let timeFormat = 'YYYY-MM-DD';
+
+        let config = {
+            type: 'bar',
+            data: {
+                labels: _.pluck(data, 'date'),
+                datasets: [{
+                    label: 'Average Sentiment',
+                    backgroundColor: '#F6CC86',
+                    borderColor: '#F6CC86',
+                    fill: false,
+                    data: _.pluck(data, 'sentiment'),
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            format: timeFormat,
+                            tooltipFormat: timeFormat,
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date',
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Sentiment',
+                        }
+                    }]
+                },
+            },
+            plugins: [{
+              beforeDraw: function(c) {
+                 var data = c.data.datasets[0].data;
+                 for (let i in data) {
+                    let bar = c.data.datasets[0]._meta['0'].data[i]._model;
+                    if (data[i] > 0) {
+                       bar.backgroundColor = '#539D5C';
+                    } else bar.backgroundColor = '#CC4C3A';
+                 }
+              }
+           }]
+        };
+
+        let ctx = document.getElementById('canvas').getContext('2d');
+        window.bars = new Chart(ctx, config);
+    });
+</script>
 
 </body>
 </html>
