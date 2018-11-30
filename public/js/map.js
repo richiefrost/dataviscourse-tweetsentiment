@@ -151,8 +151,12 @@ export class TweetMap {
         d3.select('#map-label').html('Average Sentiment per State');
 
         const sentimentDomain = d3.extent(Object.keys(averages), state => averages[state]);
-        sentimentDomain.reverse(); // Reverse this so our color scale goes from blue to red.
+        //sentimentDomain.reverse(); // Reverse this so our color scale goes from blue to yellow.
 
+        var color1 = d3.scaleLinear()
+            .domain(sentimentDomain)
+            .range(['#3337B2', '#FFD835'])
+            .interpolate(d3.interpolateHcl);
 
         const scale = d3.scaleSequential(d3.interpolateRdBu)
             .domain(sentimentDomain);
@@ -169,7 +173,7 @@ export class TweetMap {
             .scale(scale)
             .labelAlign('middle')
             .labelOffset(3)
-            .labels(['Positive (+1)', '', '', '', 'Neutral (0)', '', '', '', 'Negative (-1)']);
+            .labels(['Negative (-1)', '', '', '', 'Neutral (0)', '', '', '', 'Positive (+1)']);
 
         this.svg.select('.legend')
             .call(legend);
@@ -204,11 +208,11 @@ export class TweetMap {
         return scale;
     }
 
-    renderMapFill(stateData, colorInterpolation = d3.interpolateGreens) {
+    renderMapFill(stateData, colorInterpolation = d3.interpolateBlues) {
         const that = this;
 
         let labels = [];
-        if(colorInterpolation == d3.interpolateGreens){
+        if(colorInterpolation == d3.interpolateBlues){
             d3.select('#map-label').html('Happiest Ranked States <small class="text-muted">based on number of happy tweets</small>');
             labels = ['Least Happy', '', '', '', '', '', '', '', 'Most Happy'];
         } else {
@@ -236,7 +240,7 @@ export class TweetMap {
         this.svg.select('.legend')
             .call(legend);
 
-        this.svg.selectAll('path')
+        this.svg.selectAll('path.state')
             .attr('fill', d => scale(stateData[d.properties.postal]))
             .on('mouseover', d => {
                 d3.event.stopPropagation();
