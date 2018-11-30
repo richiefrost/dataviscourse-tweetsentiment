@@ -1,4 +1,4 @@
-# Visualizing Sentiment & Geoencoding with Tweets
+# How Happy is America?
 ###### CS 6630 Final Project
 *Neeka Ebrahimi | u0671080 | neeka.ebrahimi@gmail.com*
 
@@ -6,7 +6,7 @@
 
 *Dyllon Gagnier | u0708624 | dyllongagnier@gmail.com*
 
-Is there is an intuitive and informative way to visualize tweet sentiment, location, and time? That's what we aim to find out.
+Visualizing Tweet sentiment & geoencoding to determine America's happiness.
 
 #### Get Started
 ```sh
@@ -17,3 +17,13 @@ $ python -m SimpleHTTPServer 8080
 $ python -m http.server 8080
 ```
 Then go to [http://localhost:8080](http://localhost:8080).
+
+#### URLs
+* Site url: https://richiefrost.github.io/dataviscourse-tweetsentiment/
+* Video url: 
+
+#### Notes:
+* Use drop-down menu to select between different maps.
+* Hover over states to see tooltip pop-up with general information.
+* Click on states to get more detailed information (breakdown of tweets, most positive/negative tweet).
+* Click the question mark in the upper right corner of the site to see "help" popup. Screencast video on how to use the site found here.
