@@ -313,9 +313,9 @@ export class TweetMap {
         html += "<h4 class='card-title text-primary'>"+d.properties.name+"</h4>";
 
         html += "<ul class='list-group'>";
-        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Total Tweets <span class='badge badge-info badge-pill'>"+this.totalTweets[d.properties.postal]+"</span></li>";
-        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Positive Tweets <span class='badge badge-success badge-pill'>"+this.totalHappy[d.properties.postal]+"</span></li>";
-        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Negative Tweets <span class='badge badge-danger badge-pill'>"+this.totalAngry[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Total Tweets <span class='badge total badge-pill'>"+this.totalTweets[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Positive Tweets <span class='badge positive badge-pill'>"+this.totalHappy[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Negative Tweets <span class='badge negative badge-pill'>"+this.totalAngry[d.properties.postal]+"</span></li>";
         html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Avg. Sentiment <span class='badge badge-light badge-pill'>"+this.avgSentiments[d.properties.postal].toFixed(4)+"</span></li>";
         html += "</ul>";
 
