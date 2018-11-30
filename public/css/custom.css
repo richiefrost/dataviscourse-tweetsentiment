@@ -4,6 +4,10 @@
     stroke-width: 0.5px;
 }
 
+#voronoi {
+    pointer-events: none;
+}
+
 .data-map rect {
     fill: green;
 }

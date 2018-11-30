@@ -160,8 +160,8 @@
                  var data = c.data.datasets[0].data;
                  for (let i in data) {
                     let bar = c.data.datasets[0]._meta['0'].data[i]._model;
-                    if (data[i] > 0) {
-                       bar.backgroundColor = '#539D5C';
+                    if (data[i] < 0) {
+                       bar.backgroundColor = 'rgb(5, 48, 97)';
                     } else bar.backgroundColor = '#CC4C3A';
                  }
               }
