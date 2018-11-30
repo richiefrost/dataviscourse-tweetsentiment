@@ -102,7 +102,7 @@ export class TweetMap {
 
         d3.select('#map-label').html('Total Tweets per State');
 
-        const scale = d3.scaleSequential(d3.interpolateBlues)
+        const scale = d3.scaleSequential(d3.interpolateOranges)
             .domain(d3.extent(Object.keys(totals), state => totals[state])); // Domain based on state total
 
         this.svg.append('g')
@@ -204,11 +204,11 @@ export class TweetMap {
         return scale;
     }
 
-    renderMapFill(stateData, colorInterpolation = d3.interpolateGreens) {
+    renderMapFill(stateData, colorInterpolation = d3.interpolateBlues) {
         const that = this;
 
         let labels = [];
-        if(colorInterpolation == d3.interpolateGreens){
+        if(colorInterpolation == d3.interpolateBlues){
             d3.select('#map-label').html('Happiest Ranked States <small class="text-muted">based on number of happy tweets</small>');
             labels = ['Least Happy', '', '', '', '', '', '', '', 'Most Happy'];
         } else {

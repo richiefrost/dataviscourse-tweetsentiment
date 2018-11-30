@@ -36,7 +36,7 @@ async function main() {
                 totals = getTotalByState(data.filter(tweet => tweet.sentiment_score >= 0.5));
                 // Normalize by taking the rank of each state
                 ranks = getStateRanks(totals, 'asc');
-                tweetMap.renderMapFill(ranks, d3.interpolateGreens);
+                tweetMap.renderMapFill(ranks, d3.interpolateBlues);
                 break;
             case 'Angriest ranked states':
                 totals = getTotalByState(data.filter(tweet => tweet.sentiment_score < 0.5));
