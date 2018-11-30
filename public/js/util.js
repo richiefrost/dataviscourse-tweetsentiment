@@ -145,3 +145,20 @@ export function uniformRandom(begin, end) {
 export function sum(arr) {
     return arr.reduce((x1, x2) => x1 + x2, 0);
 }
+
+export function naturalComparator(a, b) {
+    if (a < b) {
+        return -1;
+    } else if (a == b) {
+        return 0
+    } else {
+        return 1;
+    }
+}
+
+export function sortedBy(iter, key = identity) {
+    const result = Array.from(iter);
+    const comp = (a, b) => naturalComparator(key(a), key(b));
+    result.sort(comp);
+    return result;
+}

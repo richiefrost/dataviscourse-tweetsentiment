@@ -1,73 +1,6 @@
-import { minBy, sum, uniformRandom } from './util.js'
+import { minBy } from './util.js'
 
-const CLUSTER_COUNT = 50;
-
-const square = x => x * x;
-const distance = (p1, p2) => Math.sqrt(square(p1[0] - p2[0]) + square(p1[1] - p2[1]));
-
-const findCenterGen = centers => point => {
-    return minBy(centers, center => distance(center, point));
-};
-
-const kmeans = (points, centers) => {
-    let trueCenters = centers;
-
-    const centersEqual = newCenters => {
-        for (let i = 0; i < trueCenters.length; i++) {
-            const c1 = trueCenters[i];
-            const c2 = newCenters[i];
-
-            if (c1[0] !== c2[0] || c1[1] !== c2[1]) {
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    while (true) {
-        const clusterMap = new Map(trueCenters.map(center => [center, []]));
-        const clusterFunc = findCenterGen(trueCenters);
-
-        for (const point of points) {
-            clusterMap.get(clusterFunc(point)).push(point);
-        }
-
-        const newCenters = Array.from(clusterMap.values()).map(clusterPoints => {
-            const computeEle = pos => sum(clusterPoints.map(pt => pt[pos])) / clusterPoints.length;
-            return [computeEle(0), computeEle(1)];
-        });
-
-        if (centersEqual(newCenters)) {
-            return clusterFunc;
-        } else {
-            trueCenters = newCenters;
-        }
-    }
-};
-
-// Lets do a Gonzalez cluster for simplicity.
-const pointCluster = (points, clusterCount) => {
-    const centers = [points[0]];
-
-    let findCenter = findCenterGen(centers);
-
-    while (centers.length < clusterCount && centers.length < points.length) {
-        const newCenter = minBy(points, point => {
-            const pcenter = findCenter(point);
-            return distance(pcenter, point);
-        }, true);
-        centers.push(newCenter);
-        findCenter = findCenterGen(centers);
-    }
-    // const centers = new Set();
-    // while (centers.size < clusterCount) {
-    //     const index = Math.floor(uniformRandom(0, points.length));
-    //     centers.add(points[index]);
-    // }
-
-    return kmeans(points, Array.from(centers));
-};
+const voronoiPathGroup = 'voronoi';
 
 export class TweetMap {
     constructor(selectorQuery, mapJSON, avgSentiments, totalTweets, totalHappy, totalAngry, topTweets) {
@@ -114,6 +47,54 @@ export class TweetMap {
         this.totalHappy = totalHappy;
         this.totalAngry = totalAngry;
         this.topTweets = topTweets;
+
+        this.voronoiGroup = this.svg.append('g').attr('id', voronoiPathGroup);
+        const clipPath = this.voronoiGroup.append('clipPath').attr('id', 'voronoiClip');
+
+        clipPath.selectAll('path')
+            .data(mapJSON.features)
+            .enter()
+            .append('path')
+            .attr('d', path);
+    }
+
+    initVoronoi(polygons) {
+        // Use the state map as a clipPath eventually.
+        const polygonPath = polygon => {
+            const result = d3.path();
+            const firstPoint = polygon[0]
+            result.moveTo(firstPoint[0], firstPoint[1]);
+
+            for (const point of polygon.slice(1)) {
+                result.lineTo(point[0], point[1]);
+            }
+
+            result.closePath();
+            return result.toString();
+        };
+        this.voronoiGroup = this.voronoiGroup.selectAll(`path.${voronoiPathGroup}`)
+            .data(polygons)
+            .enter()
+            .append('path')
+            .attr('class', `path.${voronoiPathGroup}`)
+            .attr('d', polygonPath)
+            .attr('stroke-width', 0)
+            .attr('stroke-opacity', 0)
+            .attr('clip-path', 'url(#voronoiClip)');
+    }
+
+    showVoronoi(voronoiData, colorScale) {
+        colorScale.domain([minBy(voronoiData), minBy(voronoiData, undefined, true)]);
+        this.voronoiGroup
+            .attr('fill', (_, i) => colorScale(voronoiData[i]));
+        this.svg.selectAll('path.state').style('pointer-events', 'none');
+    }
+
+    hideVoronoi() {
+        this.voronoiGroup
+            .attr('fill', 'transparent');
+        this.svg.selectAll('path.state')
+        this.svg.selectAll('path.state').style('pointer-events', 'unset');
     }
 
     renderTotals(totals) {
@@ -141,7 +122,7 @@ export class TweetMap {
         this.svg.select('.legend')
             .call(legend);
 
-        this.svg.selectAll('path')
+        this.svg.selectAll('path.state')
             .attr('fill', d => scale(totals[d.properties.postal]))
             .on('mouseover', d => {
                 d3.event.stopPropagation();
@@ -193,7 +174,7 @@ export class TweetMap {
         this.svg.select('.legend')
             .call(legend);
 
-        this.svg.selectAll('path')
+        this.svg.selectAll('path.state')
             .attr('fill', d => scale(averages[d.properties.postal]))
             .on('mouseover', d => {
                 d3.event.stopPropagation();
@@ -219,6 +200,8 @@ export class TweetMap {
                 d3.select("#state-info")
                     .html(that.stateInfoRender(d));
             });
+
+        return scale;
     }
 
     renderMapFill(stateData, colorInterpolation = d3.interpolateGreens) {
