@@ -237,7 +237,7 @@ export class TweetMap {
             .call(legend);
 
         this.svg.selectAll('path')
-            .attr('fill', d => scale(stateData[d.properties.postal]))
+            .attr('fill', d => d.properties ? scale(stateData[d.properties.postal]) : 0)
             .on('mouseover', d => {
                 d3.event.stopPropagation();
                 d3.select(".tooltip")
