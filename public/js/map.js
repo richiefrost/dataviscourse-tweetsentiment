@@ -151,8 +151,12 @@ export class TweetMap {
         d3.select('#map-label').html('Average Sentiment per State');
 
         const sentimentDomain = d3.extent(Object.keys(averages), state => averages[state]);
-        sentimentDomain.reverse(); // Reverse this so our color scale goes from blue to red.
+        //sentimentDomain.reverse(); // Reverse this so our color scale goes from blue to yellow.
 
+        var color1 = d3.scaleLinear()
+            .domain(sentimentDomain)
+            .range(['#3337B2', '#FFD835'])
+            .interpolate(d3.interpolateHcl);
 
         const scale = d3.scaleSequential(d3.interpolateRdBu)
             .domain(sentimentDomain);
@@ -169,7 +173,7 @@ export class TweetMap {
             .scale(scale)
             .labelAlign('middle')
             .labelOffset(3)
-            .labels(['Positive (+1)', '', '', '', 'Neutral (0)', '', '', '', 'Negative (-1)']);
+            .labels(['Negative (-1)', '', '', '', 'Neutral (0)', '', '', '', 'Positive (+1)']);
 
         this.svg.select('.legend')
             .call(legend);
@@ -236,8 +240,8 @@ export class TweetMap {
         this.svg.select('.legend')
             .call(legend);
 
-        this.svg.selectAll('path')
-            .attr('fill', d => d.properties ? scale(stateData[d.properties.postal]) : 0)
+        this.svg.selectAll('path.state')
+            .attr('fill', d => scale(stateData[d.properties.postal]))
             .on('mouseover', d => {
                 d3.event.stopPropagation();
                 d3.select(".tooltip")
@@ -309,9 +313,9 @@ export class TweetMap {
         html += "<h4 class='card-title text-primary'>"+d.properties.name+"</h4>";
 
         html += "<ul class='list-group'>";
-        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Total Tweets <span class='badge badge-info badge-pill'>"+this.totalTweets[d.properties.postal]+"</span></li>";
-        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Positive Tweets <span class='badge badge-success badge-pill'>"+this.totalHappy[d.properties.postal]+"</span></li>";
-        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Negative Tweets <span class='badge badge-danger badge-pill'>"+this.totalAngry[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Total Tweets <span class='badge total badge-pill'>"+this.totalTweets[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Positive Tweets <span class='badge positive badge-pill'>"+this.totalHappy[d.properties.postal]+"</span></li>";
+        html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Negative Tweets <span class='badge negative badge-pill'>"+this.totalAngry[d.properties.postal]+"</span></li>";
         html += "<li class='list-group-item d-flex justify-content-between align-items-center'>Avg. Sentiment <span class='badge badge-light badge-pill'>"+this.avgSentiments[d.properties.postal].toFixed(4)+"</span></li>";
         html += "</ul>";
 

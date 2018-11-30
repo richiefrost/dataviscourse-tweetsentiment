@@ -20,10 +20,10 @@ Then go to [http://localhost:8080](http://localhost:8080).
 
 #### URLs
 * Site url: https://richiefrost.github.io/dataviscourse-tweetsentiment/
-* Video url: 
+* Video url: https://youtu.be/bSAVSMAlaOA
 
 #### Notes:
-* Use drop-down menu to select between different maps.
+* Use drop-down menu to select between different views.
 * Hover over states to see tooltip pop-up with general information.
 * Click on states to get more detailed information (breakdown of tweets, most positive/negative tweet).
 * Click the question mark in the upper right corner of the site to see "help" popup. Screencast video on how to use the site found here.

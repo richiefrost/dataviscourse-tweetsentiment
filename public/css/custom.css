@@ -13,11 +13,20 @@
 }
 
 .positive {
-	fill: #11305E;
+    fill: #11305E;
+    color: #fff;
+    background-color: #11305E;
+}
+
+.total {
+    background-color: rgb(127, 39, 4);
+    color: #fff;
 }
 
 .negative {
-	fill: #A70326;
+    fill: #A70326;
+    color: #fff;
+    background-color: #A70326;
 }
 
 .white {
